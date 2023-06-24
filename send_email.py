@@ -5,7 +5,7 @@ from email.message import EmailMessage
 
 def SendEmail(file, account_number_and_date):
     sender_email = ''
-    receiver_email = 'bankstatement@indus.edu.pk'
+    receiver_email = ''
     smtp_server = 'cpanel-s90.web-hosting.com'
     port = 465
     login = ''
