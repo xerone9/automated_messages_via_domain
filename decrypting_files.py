@@ -36,20 +36,40 @@ def DecryptingFiles(encrypted_files):
                         os.remove(encrypted_file)
                         reader = PdfReader(decrypted_file)
                         pages = len(reader.pages)
+                        account_number = ""
+                        statement_date = ""
+                        opening_balance = "0.00"
+                        closing_balance = "0.00"
+                        total_deposits = "0.00"
+                        clearing_amount = "0.00"
+                        total_withdrawals = "0.00"
                         for i in range(pages):
                             page = reader.pages[i]
                             information = str(page.extract_text())
                             try:
                                 if information.__contains__("Pak Rupees"):
                                     account_number = information.split("Pak Rupees")[1].split(" Account #")[0]
-                                    statement_date = information.split(" ** Closing Balance **")[0][-11:]
+                                    if statement_date == "":
+                                        statement_date = information.split(" ** Closing Balance **")[0][-11:]
                                     if statement_date.__contains__("DB"):
                                         statement_date = information.split(" ** Opening Balance ** ")[1].split("Value Date")[0]
+                                    opening_balance = information.split(" ** Opening Balance **")[0].split("Time Balance Date\n")[1]
+                                    closing_balance = information.split("\nIMPORTANT INFORMATION")[0].split(" ")[-1]
+                                    total_deposits = information.split(" TOTAL DEPOSITS  ")[1].split("  ")[1]
+                                    clearing_amount = information.split(" ** Closing Available Balance **")[1].split("\n")[0]
+                                    total_withdrawals = information.split(" TOTAL DEPOSITS  ")[1].split("  ")[2].split(" ")[0]
+
                                     os.rename(str(decrypted_file), account_number + " - " + statement_date + ".pdf")
                                     decrypted_file = account_number + " - " + statement_date + ".pdf"
-                                    break
                             except Exception as errors:
                                 print(errors)
+                        statement_summary = {
+                            'Opening_Balance': opening_balance,
+                            'Total_Deposits': total_deposits,
+                            'Total_Withdrawals': total_withdrawals,
+                            'Clearing_Amount': clearing_amount,
+                            'Available_Balance': closing_balance,
+                        }
                         break
                 else:
                     # print("No Password Found For: " + encrypted_file)
@@ -58,5 +78,6 @@ def DecryptingFiles(encrypted_files):
                 pass
 
         decrypted_files.append([decrypted_file, account_number + " - " + statement_date, file_unlocked])
+        decrypted_files.append(statement_summary)
 
     return decrypted_files

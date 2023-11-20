@@ -13,12 +13,14 @@ def main():
         decryption = DecryptingFiles(check_email)
         # if decryption done
         if len(decryption) > 0:
+            statement_summary = decryption[-1]
             for file in decryption:
-                if file[2]:
-                    SendEmail(file[0], file[1])
-                else:
-                    print(f'{file[0]} - Password Not Found')
-                    os.remove(str(file[0]).replace("unlocked - ", ""))
+                if not isinstance(file, dict):
+                    if file[2]:
+                        SendEmail(file[0], file[1], statement_summary)
+                    else:
+                        print(f'{file[0]} - Password Not Found')
+                        os.remove(str(file[0]).replace("unlocked - ", ""))
         else:
             print("No Statement with Password Found")
 
