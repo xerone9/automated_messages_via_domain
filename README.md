@@ -14,7 +14,5 @@ A cron job has been set that triggers that applcation every 3rd hour cant run al
 ### Changelog 1.1
 
 1- Added statement summary. Now decrypted pdf statement will be send back with account summary
-
 2- Signature and social links added
-
 3- When all statements are send back. Another email will be sent to will alla account names and Available balances
