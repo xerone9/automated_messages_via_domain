@@ -11,8 +11,10 @@ I set a forwarder to my gmail account that all email I received that contains "E
 
 A cron job has been set that triggers that applcation every 3rd hour cant run all the time as my domain server CPU usage will be at its peak all the time
 
-### Changelog 1.1
+## Changelog 1.1
 
 1- Added statement summary. Now decrypted pdf statement will be send back with account summary
+
 2- Signature and social links added
+
 3- When all statements are send back. Another email will be sent to will alla account names and Available balances
