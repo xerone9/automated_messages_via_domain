@@ -2,20 +2,59 @@ import smtplib
 import os
 from email.message import EmailMessage
 from email.mime.image import MIMEImage
+import time
+
 
 
 def SendEmail(file, account_number_and_date, statement_summary):
     sender_email = ''
     receiver_email = ''
     smtp_server = ''
-    port = 000
+    port = 465
     login = ''
     password = ''
+
+    if not file:
+        # New statement order has been set and 2 accounts removed by Kamran Sir
+        total_balance = float(str(statement_summary['Available_Balance'][-1]).replace(",", ""))
+        index_number_212 = statement_summary['Account_Number'].index('0861480800212')
+        index_number_66 = statement_summary['Account_Number'].index('0860380800066')
+        negate_212_balance = float(str(statement_summary['Available_Balance'][index_number_212]).replace(",", ""))
+        negate_66_balance = float(str(statement_summary['Available_Balance'][index_number_66]).replace(",", ""))
+        new_balance = total_balance - negate_212_balance - negate_66_balance
+
+        statement_order = ['0861480800100',
+                           '0861480800336',
+                           '0861480800085',
+                           '0861480800507',
+                           '0861480800074',
+                           '0860380800055',
+                           '0861480800041',
+                           '0861480800405',
+                           '0861480800391',
+                           ''] # As per Kamran Sir
+
+        statement_summary_2 = {
+            'Account_Number': [],
+            'Account_Name': [],
+            'Available_Balance': []
+        }
+
+        for order in statement_order:
+            order_index = statement_summary['Account_Number'].index(order)
+            statement_summary_2['Account_Number'].append(statement_summary['Account_Number'][order_index])
+            statement_summary_2['Account_Name'].append(statement_summary['Account_Name'][order_index])
+            statement_summary_2['Available_Balance'].append(statement_summary['Available_Balance'][order_index])
+
+        statement_summary_2['Available_Balance'].pop()
+        statement_summary_2['Available_Balance'].append(f'{new_balance:,.2f}')
+        statement_summary = statement_summary_2
 
     message = EmailMessage()
     if file:
         message['Subject'] = f'Unlocked Statement - {account_number_and_date}'
     else:
+        time.sleep(10)
         message['Subject'] = account_number_and_date
 
     message['From'] = f'Askari Bank Statements <{sender_email}>'
@@ -51,11 +90,11 @@ def SendEmail(file, account_number_and_date, statement_summary):
         table_html += '</tr>'
 
         # Values rows with styling
-        for i in range(12):  # Assuming there are 11 + 1 (Total) values in each list
+        for i in range(10):  # Assuming there are 9 + 1 (Total) values in each list
             # Determine background color based on odd or even row
             background_color = 'white' if i % 2 == 0 else '#f2f2f2'
             color = 'black'
-            if i == 11:
+            if i == 9:
                 background_color = 'black'
                 color = 'white'
 
@@ -119,7 +158,7 @@ def SendEmail(file, account_number_and_date, statement_summary):
             </a>
         </div>
         <div style="font-style: italic; color: grey; font-size: small;">
-            This is an automated email via personal domain.
+            This is an automated email via private domain.
         </div>
         '''
 
@@ -147,6 +186,7 @@ def SendEmail(file, account_number_and_date, statement_summary):
     with smtplib.SMTP_SSL(smtp_server, port) as server:
         server.login(login, password)
         server.send_message(message)
+
     if file:
         os.remove(file)
     else:

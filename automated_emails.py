@@ -69,7 +69,7 @@ def main():
                         data_dict["Account_Number"].append("")
                         data_dict["Account_Name"].append("")
 
-                    SendEmail(temp_variable, "Available Balance Today", data_dict)
+                    SendEmail(temp_variable, "Available Balance in Accounts Dated: " + csv_file_path.split(".csv")[0], data_dict)
         else:
             print("No Statement with Password Found")
 

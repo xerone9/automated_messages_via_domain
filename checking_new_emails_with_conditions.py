@@ -4,8 +4,8 @@ import email
 
 def CheckingNewEmails():
     imap_server = 'cpanel-s90.web-hosting.com'
-    username = ''
-    password = ''
+    username = 'indus@rubick.org'
+    password = 'numbermera'
 
     # Connect to the IMAP server
     with imaplib.IMAP4_SSL(imap_server) as server:
