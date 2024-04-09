@@ -3,25 +3,25 @@ import os
 from email.message import EmailMessage
 from email.mime.image import MIMEImage
 import time
-
+from auto_indus_erp_entries import make_entry_in_erp
 
 
 def SendEmail(file, account_number_and_date, statement_summary):
     sender_email = ''
-    receiver_email = ''
-    smtp_server = ''
+    receiver_email = 'accountofficer-2@indus.edu.pk'
+    smtp_server = 'cpanel-s90.web-hosting.com'
     port = 465
     login = ''
     password = ''
 
     if not file:
         # New statement order has been set and 2 accounts removed by Kamran Sir
-        total_balance = float(str(statement_summary['Available_Balance'][-1]).replace(",", ""))
-        index_number_212 = statement_summary['Account_Number'].index('0861480800212')
-        index_number_66 = statement_summary['Account_Number'].index('0860380800066')
-        negate_212_balance = float(str(statement_summary['Available_Balance'][index_number_212]).replace(",", ""))
-        negate_66_balance = float(str(statement_summary['Available_Balance'][index_number_66]).replace(",", ""))
-        new_balance = total_balance - negate_212_balance - negate_66_balance
+        # total_balance = float(str(statement_summary['Available_Balance'][-1]).replace(",", ""))
+        # index_number_212 = statement_summary['Account_Number'].index('0861480800212')
+        # index_number_66 = statement_summary['Account_Number'].index('0860380800066')
+        # negate_212_balance = float(str(statement_summary['Available_Balance'][index_number_212]).replace(",", ""))
+        # negate_66_balance = float(str(statement_summary['Available_Balance'][index_number_66]).replace(",", ""))
+        # new_balance = total_balance - negate_212_balance - negate_66_balance
 
         statement_order = ['0861480800100',
                            '0861480800336',
@@ -44,10 +44,24 @@ def SendEmail(file, account_number_and_date, statement_summary):
             order_index = statement_summary['Account_Number'].index(order)
             statement_summary_2['Account_Number'].append(statement_summary['Account_Number'][order_index])
             statement_summary_2['Account_Name'].append(statement_summary['Account_Name'][order_index])
-            statement_summary_2['Available_Balance'].append(statement_summary['Available_Balance'][order_index])
+            # statement_summary_2['Available_Balance'].append(statement_summary['Available_Balance'][order_index])
+            balance_in_integers = int(float(str(statement_summary['Available_Balance'][order_index]).replace(",", "")))
+            statement_summary_2['Available_Balance'].append(balance_in_integers)
 
         statement_summary_2['Available_Balance'].pop()
-        statement_summary_2['Available_Balance'].append(f'{new_balance:,.2f}')
+
+        new_balance = 0
+        for balances in statement_summary_2['Available_Balance']:
+            new_balance += balances
+
+        balance_with_commas = []
+        for balance in statement_summary_2['Available_Balance']:
+            balance_with_commas.append(f'{balance:,}')
+
+        statement_summary_2['Available_Balance'] = balance_with_commas
+
+
+        statement_summary_2['Available_Balance'].append(f'{new_balance:,}')
         statement_summary = statement_summary_2
 
     message = EmailMessage()
@@ -108,7 +122,7 @@ def SendEmail(file, account_number_and_date, statement_summary):
                     table_html += f'<td style="padding-left: 5px; width: 575px;">{value}</td>'
                 elif key == "Available_Balance":
                     value = statement_summary[key][i]
-                    table_html += f'<td style="padding-left: 5px; width: 150px;">{value}</td>'
+                    table_html += f'<td style="padding-right: 5px; width: 150px; text-align: right;">{value}</td>'
             table_html += '</tr>'
 
         table_html += '</table>'

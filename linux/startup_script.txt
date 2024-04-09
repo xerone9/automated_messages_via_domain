@@ -1,0 +1,7 @@
+export LD_LIBRARY_PATH=/opt/oracle/instantclient_19_8:$LD_LIBRARY_PATH
+source /home/xerone_9/automated_messages_via_domain/venv/bin/activate
+cd /home/xerone_9/automated_messages_via_domain
+python3 automated_emails.py
+wait $!
+deactivate
+sudo shutdown -h now

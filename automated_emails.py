@@ -3,6 +3,7 @@ import csv
 from checking_new_emails_with_conditions import CheckingNewEmails
 from decrypting_files import DecryptingFiles
 from send_email import SendEmail
+from auto_indus_erp_entries import make_entry_in_erp
 
 
 def is_11_rows(file_path):
@@ -30,11 +31,18 @@ def main():
         if len(decryption) > 0:
             for file in decryption:
                 if file[2]:
+                    try:
+                        make_entry_in_erp(file[0], file[1])
+                    except Exception as e:
+                        pass
+
                     SendEmail(file[0], file[1], file[3])
+
                 else:
                     print(f'{file[0]} - Password Not Found')
                     os.remove(str(file[0]).replace("unlocked - ", ""))
 
+            # create report for all accounts balance
             csv_file_path = next(file for file in os.listdir() if file.endswith(".csv"))
             if csv_file_path:
                 if is_11_rows(csv_file_path):

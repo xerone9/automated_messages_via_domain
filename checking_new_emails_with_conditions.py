@@ -4,8 +4,8 @@ import email
 
 def CheckingNewEmails():
     imap_server = 'cpanel-s90.web-hosting.com'
-    username = 'indus@rubick.org'
-    password = 'numbermera'
+    username = ''
+    password = ''
 
     # Connect to the IMAP server
     with imaplib.IMAP4_SSL(imap_server) as server:
@@ -30,6 +30,8 @@ def CheckingNewEmails():
             #     print(f"\t{email_message['From']} - {email_message['Subject']} - {email_message['Date']}")
             #     # server.store(num, '+FLAGS', '\\Seen')
             if email_message['From'] == '"' + "'Askari Bank Limited' via Bank Statement" + '" <bankstatement@indus.edu.pk>':
+                pass
+            else:
                 print(f"\t{email_message['From']} - {email_message['Subject']} - {email_message['Date']}")
                 if str(email_message['Subject']).__contains__("Unlocked"):
                     server.store(num, '+FLAGS', '\\Seen')
