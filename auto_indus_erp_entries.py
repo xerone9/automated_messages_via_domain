@@ -58,11 +58,11 @@ def connect_and_pass_sql(sql_code):
         print("PATH:", os.environ.get('PATH'))
 
         # Replace these with your actual values
-        username = 'usmanaccounts'
-        password = 'usman_21022024'
-        ip = 'lms.induscms.com'
+        username = ''
+        password = ''
+        ip = ''
         port = '1521'  # Default Oracle port is 1521
-        connect_string = 'orcl'
+        connect_string = ''
 
         os.environ['PATH'] = 'C:/oracle/instantclient_19_3;' + os.environ['PATH']
 
